@@ -8,6 +8,11 @@ class UI {
         this.formState = 'add';
     } 
 
+    // Clear ID hidden value
+    clearIdInput() {
+        this.idInput.value = '';
+    }
+
     // Show all posts
     showPosts(posts) {
         let output = '';
@@ -95,7 +100,17 @@ class UI {
             // Insert cancel button
             cardForm.insertBefore(button, formEnd);
         } else {
-            
+            this.postSubmit.textContent = 'Post It';
+            this.postSubmit.className = 'post-submit btn btn-primary btn-block'
+
+            //Remove cancel button if its there
+            if(document.querySelector('.post-cancel')) {
+                document.querySelector('.post-cancel').remove();
+            }
+            // Clear ID from hidden field
+            this.clearIdInput();
+            // Clear text
+            this.clearFields();
         }
 
     }

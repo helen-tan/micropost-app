@@ -13,6 +13,9 @@ document.querySelector('#posts').addEventListener('click', deletePost);
 // Listen for edit state (event delegation)
 document.querySelector('#posts').addEventListener('click', enableEdit);
 
+//Listen for cancel (event delegation)
+document.querySelector('.card-form').addEventListener('click', cancelEdit);
+
 // GET Posts (READ)
 function getPosts(){
     http.get('http://localhost:3000/posts') // Use http module
@@ -70,12 +73,21 @@ function enableEdit(e) {
             title,
             body
         }
-        
+
         // Fill form with current post
         ui.fillForm(data);
     }
 
     e.preventDefault();
+}
+
+// Cancel Edit state
+function cancelEdit(e) {
+ if(e.target.classList.contains('post-cancel')){
+    ui.changeFormState('add');
+ }
+
+ e.preventDefault();
 }
 
     
