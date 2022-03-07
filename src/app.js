@@ -10,14 +10,17 @@ document.querySelector('.post-submit').addEventListener('click', submitPost);
 // Listen for delete (event delegation)
 document.querySelector('#posts').addEventListener('click', deletePost);
 
-// GET Posts
+// Listen for edit state (event delegation)
+document.querySelector('#posts').addEventListener('click', enableEdit);
+
+// GET Posts (READ)
 function getPosts(){
     http.get('http://localhost:3000/posts') // Use http module
         .then(data => ui.showPosts(data))
         .catch(err => console.log(err)); 
 }
 
-// Submit Posts
+// Submit Posts (CREATE)
 function submitPost(){
     const title = document.querySelector('#title').value;
     const body = document.querySelector('#body').value;
@@ -37,7 +40,7 @@ function submitPost(){
         .catch(err => console.log(err));
 }
 
-// DELETE Post
+// DELETE Post (DELETE)
 function deletePost(e) {
     e.preventDefault();
 
@@ -53,6 +56,26 @@ function deletePost(e) {
             .catch(err => console.log(err));
         }
     }
+}
+
+// Enable Edit State
+function enableEdit(e) {
+    if(e.target.parentElement.classList.contains('edit')){
+        const id = e.target.parentElement.dataset.id;
+        const title = e.target.parentElement.previousElementSibling.previousElementSibling.textContent;
+        const body = e.target.parentElement.previousElementSibling.textContent;
+        
+        const data = {
+            id,
+            title,
+            body
+        }
+        
+        // Fill form with current post
+        ui.fillForm(data);
+    }
+
+    e.preventDefault();
 }
 
     
