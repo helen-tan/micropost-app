@@ -34,28 +34,33 @@ function submitPost() {
         body: body
     }
 
-    // hidden id field: nothing - add state
-    // something inside - edit state
-
-    // Check for ID
-    if (id === '') {
-        // Create Post
-        http.post('http://localhost:3000/posts', data)
-            .then(data => {
-                ui.showAlert('Post Added!', 'alert alert-success');
-                ui.clearFields();
-                getPosts();
-            })
-            .catch(err => console.log(err));
+    // Form validation
+    if (title === '' || body === '') {
+        ui.showAlert('Please fill in all fields', 'alert alert-danger');
     } else {
-        // Update post
-        http.put(`http://localhost:3000/posts/${id}`, data)
-            .then(data => {
-                ui.showAlert('Post Updated!', 'alert alert-success');
-                ui.changeFormState('add');
-                getPosts();
-            })
-            .catch(err => console.log(err));
+        // hidden id field: nothing - add state
+        // something inside - edit state
+
+        // Check for ID
+        if (id === '') {
+            // Create Post
+            http.post('http://localhost:3000/posts', data)
+                .then(data => {
+                    ui.showAlert('Post Added!', 'alert alert-success');
+                    ui.clearFields();
+                    getPosts();
+                })
+                .catch(err => console.log(err));
+        } else {
+            // Update post
+            http.put(`http://localhost:3000/posts/${id}`, data)
+                .then(data => {
+                    ui.showAlert('Post Updated!', 'alert alert-success');
+                    ui.changeFormState('add');
+                    getPosts();
+                })
+                .catch(err => console.log(err));
+        }
     }
 }
 
