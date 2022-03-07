@@ -17,57 +17,73 @@ document.querySelector('#posts').addEventListener('click', enableEdit);
 document.querySelector('.card-form').addEventListener('click', cancelEdit);
 
 // GET Posts (READ)
-function getPosts(){
+function getPosts() {
     http.get('http://localhost:3000/posts') // Use http module
         .then(data => ui.showPosts(data))
-        .catch(err => console.log(err)); 
+        .catch(err => console.log(err));
 }
 
 // Submit Posts (CREATE)
-function submitPost(){
+function submitPost() {
     const title = document.querySelector('#title').value;
     const body = document.querySelector('#body').value;
+    const id = document.querySelector('#id').value;
 
     const data = {
         title: title,
         body: body
     }
 
-    // Create Post
-    http.post('http://localhost:3000/posts', data)
-        .then(data => {
-            ui.showAlert('Post Added!', 'alert alert-success');
-            ui.clearFields();
-            getPosts();
-        })
-        .catch(err => console.log(err));
+    // hidden id field: nothing - add state
+    // something inside - edit state
+
+    // Check for ID
+    if (id === '') {
+        // Create Post
+        http.post('http://localhost:3000/posts', data)
+            .then(data => {
+                ui.showAlert('Post Added!', 'alert alert-success');
+                ui.clearFields();
+                getPosts();
+            })
+            .catch(err => console.log(err));
+    } else {
+        // Update post
+        http.put(`http://localhost:3000/posts/${id}`, data)
+            .then(data => {
+                ui.showAlert('Post Updated!', 'alert alert-success');
+                ui.changeFormState('add');
+                getPosts();
+            })
+            .catch(err => console.log(err));
+    }
 }
 
 // DELETE Post (DELETE)
 function deletePost(e) {
     e.preventDefault();
 
-    if(e.target.parentElement.classList.contains('delete')){
+    if (e.target.parentElement.classList.contains('delete')) {
         const id = e.target.parentElement.dataset.id;
 
-        if(confirm('Are you sure?')){
+        if (confirm('Are you sure?')) {
             http.delete(`http://localhost:3000/posts/${id}`)
-            .then(data => {
-                ui.showAlert('Post Removed', 'alert alert-success');
-                getPosts();
-            })
-            .catch(err => console.log(err));
+                .then(data => {
+                    ui.showAlert('Post Removed', 'alert alert-success');
+                    getPosts();
+                })
+                .catch(err => console.log(err));
         }
     }
 }
 
 // Enable Edit State
 function enableEdit(e) {
-    if(e.target.parentElement.classList.contains('edit')){
+    if (e.target.parentElement.classList.contains('edit')) {
         const id = e.target.parentElement.dataset.id;
         const title = e.target.parentElement.previousElementSibling.previousElementSibling.textContent;
         const body = e.target.parentElement.previousElementSibling.textContent;
-        
+
         const data = {
             id,
             title,
@@ -83,11 +99,10 @@ function enableEdit(e) {
 
 // Cancel Edit state
 function cancelEdit(e) {
- if(e.target.classList.contains('post-cancel')){
-    ui.changeFormState('add');
- }
+    if (e.target.classList.contains('post-cancel')) {
+        ui.changeFormState('add');
+    }
 
- e.preventDefault();
+    e.preventDefault();
 }
 
-    
